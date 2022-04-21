@@ -12,6 +12,8 @@ local gfx <const> = playdate.graphics
 -- player sprite local variable
 local playerSprite = nil
 
+local playerSpeed = 4
+
 local function initialize()
 -- .png file extension not needed to be passed
 	local playerImage = gfx.image.new("images/player")
@@ -41,6 +43,22 @@ initialize()
 -- main loop for the game, called every frame before it's drawn
 -- playdate runs at 30fps, no draw loop, only update
 function playdate.update()
+-- checks for playerInput, returns true if button is currently pressed, accepts following inputs:
+-- kButtonA, kButtonB, kButtonUp, kButtonDown, kButtonLeft, kButtonRight, or one of strings "a", "b", "up", "down", "left", "right"
+	if playdate.buttonIsPressed(playdate.kButtonUp) then
+-- playerSpeed is 4, therefore moves player by 4pixels every frame
+		playerSprite:moveBy(0, -playerSpeed)
+	end
+	if playdate.buttonIsPressed(playdate.kButtonRight) then
+		playerSprite:moveBy(playerSpeed, 0)
+	end
+	if playdate.buttonIsPressed(playdate.kButtonDown) then
+		playerSprite:moveBy(0, playerSpeed)
+	end
+	if playdate.buttonIsPressed(playdate.kButtonLeft) then
+		playerSprite:moveBy(-playerSpeed, 0)
+	end
+
 -- this tells the sprite class to update everything in the drawList on every frame
 	gfx.sprite.update()
 end
