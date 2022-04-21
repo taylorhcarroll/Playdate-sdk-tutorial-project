@@ -14,6 +14,15 @@ local playerSprite = nil
 
 local playerSpeed = 4
 
+local playTimer = nil
+-- 30 * 1000 is 30 seconds in miliseconds
+local playTime = 30 * 3000
+
+local function resetTimer()
+-- 1st arg is duration of timer, 2nd startingValue (since we're counting down), 3rd final(ending) value of timer, 4th way we want the value to progress  
+	playTimer = playdate.timer.new(playTime, playTime, 0, playdate.easingFunctions.linear)
+end
+
 local function initialize()
 -- .png file extension not needed to be passed
 	local playerImage = gfx.image.new("images/player")
@@ -36,6 +45,8 @@ local function initialize()
 			gfx.clearClipRect()
 		end
 	)
+-- call this at end of initialize to set timer when everything is loaded
+	resetTimer()
 end
 
 initialize()
@@ -43,22 +54,35 @@ initialize()
 -- main loop for the game, called every frame before it's drawn
 -- playdate runs at 30fps, no draw loop, only update
 function playdate.update()
+-- checks if timer hit 0, require player to press button to reset game
+	if playTimer.value == 0 then
+		if playdate.buttonJustPressed(playdate.kButtonA) then
+			resetTimer()
+		end
+	else
+
 -- checks for playerInput, returns true if button is currently pressed, accepts following inputs:
 -- kButtonA, kButtonB, kButtonUp, kButtonDown, kButtonLeft, kButtonRight, or one of strings "a", "b", "up", "down", "left", "right"
-	if playdate.buttonIsPressed(playdate.kButtonUp) then
+		if playdate.buttonIsPressed(playdate.kButtonUp) then
 -- playerSpeed is 4, therefore moves player by 4pixels every frame
 		playerSprite:moveBy(0, -playerSpeed)
-	end
-	if playdate.buttonIsPressed(playdate.kButtonRight) then
-		playerSprite:moveBy(playerSpeed, 0)
-	end
-	if playdate.buttonIsPressed(playdate.kButtonDown) then
-		playerSprite:moveBy(0, playerSpeed)
-	end
-	if playdate.buttonIsPressed(playdate.kButtonLeft) then
-		playerSprite:moveBy(-playerSpeed, 0)
+		end
+		if playdate.buttonIsPressed(playdate.kButtonRight) then
+			playerSprite:moveBy(playerSpeed, 0)
+		end
+		if playdate.buttonIsPressed(playdate.kButtonDown) then
+			playerSprite:moveBy(0, playerSpeed)
+		end
+		if playdate.buttonIsPressed(playdate.kButtonLeft) then
+			playerSprite:moveBy(-playerSpeed, 0)
+		end
 	end
 
+-- tells all timers in game to update, timers are common tool, also used internally for other play date elements like grid system and crank alert, DO NOT FORGET TO INCLUDE if you use an element dependent on timer
+	playdate.timer.updateTimers()
 -- this tells the sprite class to update everything in the drawList on every frame
 	gfx.sprite.update()
+
+-- displays timer, divide by 1000 to convert to seconds, math.ceiling to round up to whole seconds, last two args are coordinates of where to draw timer
+	gfx.drawText("Time: " .. math.ceil(playTimer.value/1000), 5, 5)
 end
