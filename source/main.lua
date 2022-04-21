@@ -22,6 +22,18 @@ local function initialize()
 	playerSprite:moveTo(200, 120)
 -- this adds sprite to the displayList telling the system to know to draw that sprite
 	playerSprite:add()
+
+-- can also add bg using sdk's tilemap, this example uses setbackgrounddrawingcallback
+-- setbackgrounddrawingcallback is a convenience func that creates screen-sized sprite, adds to the draw list and sets to the lowest z-index so it will always be behind everything
+	local backgroundImage = gfx.image.new("images/background")
+	gfx.sprite.setBackgroundDrawingCallback(
+		function(x, y, width, height)
+-- setClipRect and clearClipRect are added for performance optimization, the system keeps track of something called `dirty rects` which are essentially bounding boxes of every sprite that has graphically changed on the screen and needs to be re-drawn. What's passed as `x,y,width,height` is the bounding box that encapsulates the direct rects on screen and so we can limit the drawing to just those regions and won't waste processing time on something that `hasn't changed`
+			gfx.setClipRect(x, y, width, height)
+			backgroundImage:draw(0, 0)
+			gfx.clearClipRect()
+		end
+	)
 end
 
 initialize()
