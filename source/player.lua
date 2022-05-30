@@ -12,4 +12,15 @@ function Player:init(x, y)
     self:moveTo(x, y)
     -- adds player to the drawList, therefore spriteupdate function in main file knows to update the sprite
     self:add()
+
+    self.speed = 3
+end
+
+-- sprite update func in main file will be calling this update func every frame when the sprite is added with the add() method
+function Player:update()
+    if pd.buttonIsPressed(pd.kButtonUp) then
+        self:moveBy(0, -self.speed)
+    elseif pd.buttonIsPressed(pd.kButtonDown) then
+        self:moveBy(0, self.speed)
+    end
 end
