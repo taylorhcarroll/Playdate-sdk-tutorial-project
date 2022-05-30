@@ -1,5 +1,4 @@
-local pd <const> = playdate
-local gfx <const> = pd.graphics
+import "projectile"
 
 local spriteOffset <const> = 16
 
@@ -26,5 +25,9 @@ function Player:update()
             self:moveBy(0, -self.speed)
     elseif (pd.buttonIsPressed(pd.kButtonDown) and self.y < 240 - spriteOffset) then
             self:moveBy(0, self.speed)
+    end
+    -- self.x & y passed in to set initial bullet spawning location to player's current position
+    if (pd.buttonIsPressed(pd.kButtonA)) then
+        projectile(self.x, self.y, 5)
     end
 end
