@@ -19,8 +19,13 @@ end
 -- sprite update func in main file will be calling this update func every frame when the sprite is added with the add() method
 function Player:update()
     if pd.buttonIsPressed(pd.kButtonUp) then
-        self:moveBy(0, -self.speed)
+        -- if statement added to prevent user from going out of bounds
+        if self.y > 0 then
+            self:moveBy(0, -self.speed)
+        end
     elseif pd.buttonIsPressed(pd.kButtonDown) then
-        self:moveBy(0, self.speed)
+        if self.y < 240 then
+            self:moveBy(0, self.speed)
+        end
     end
 end
