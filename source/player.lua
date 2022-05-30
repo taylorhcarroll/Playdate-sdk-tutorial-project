@@ -1,6 +1,8 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
+local spriteOffset <const> = 16
+
 -- gives same properties as a sprite
 class('Player').extends(gfx.sprite)
 
@@ -17,11 +19,12 @@ function Player:init(x, y)
 end
 
 -- sprite update func in main file will be calling this update func every frame when the sprite is added with the add() method
+-- added offset to keep player sprite from going over, but another option is to work with playdate SDK's collision system
 function Player:update()
     -- if statement added to prevent user from going out of bounds
-    if (pd.buttonIsPressed(pd.kButtonUp) and self.y > 0 ) then
+    if (pd.buttonIsPressed(pd.kButtonUp) and self.y > 0 + spriteOffset ) then
             self:moveBy(0, -self.speed)
-    elseif (pd.buttonIsPressed(pd.kButtonDown) and self.y < 240) then
+    elseif (pd.buttonIsPressed(pd.kButtonDown) and self.y < 240 - spriteOffset) then
             self:moveBy(0, self.speed)
     end
 end
